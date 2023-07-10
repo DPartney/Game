@@ -148,7 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core.h" />
     <ClInclude Include="FileIO.h" />
+    <ClInclude Include="Vector2.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Time.h" />
