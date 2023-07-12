@@ -31,6 +31,7 @@ public:
 };
 
 int main(int argc, char* argv[]) {
+
 	shadow::SeedRandom((unsigned int)time(nullptr));
 	shadow::SetFilePath("assets");
 
@@ -58,6 +59,9 @@ int main(int argc, char* argv[]) {
 		stars.push_back(Star(pos, vel));
 	}
 
+	shadow::Transform transform{ {400, 300}, 0, 3 };
+	float turnRate = shadow::DegToRad(180);
+
 	// main gmae loop
 	bool quit = false;
 	while (!quit)
@@ -66,14 +70,26 @@ int main(int argc, char* argv[]) {
 
 		inputSystem.Update();
 		if (inputSystem.GetKeyDown(SDL_SCANCODE_ESCAPE)) { quit = true; }
-		//if (inputSystem.GetMouseButtonDown(0)) { cout << "Left Clicked!"; }
 
-		shadow::vec2 direction;
+		float rotate = 0;
+		if (inputSystem.GetKeyDown(SDL_SCANCODE_A)) { rotate = -1; }
+		if (inputSystem.GetKeyDown(SDL_SCANCODE_D)) { rotate = 1; }
+		transform.rotation += rotate * turnRate * shadow::g_time.GetDeltaTime();
+
+		float thrust = 0;
+		if (inputSystem.GetKeyDown(SDL_SCANCODE_W)) { thrust = 1; }
+
+		shadow::vec2 forward = shadow::vec2 { 0, -1 }.Rotate(transform.rotation);
+		transform.position += forward * speed * thrust * shadow::g_time.GetDeltaTime();
+		transform.position.x = shadow::Wrap(transform.position.x, renderer.GetWidth());
+		transform.position.y = shadow::Wrap(transform.position.y, renderer.GetHeight());
+
+		/*shadow::vec2 direction;
 		if (inputSystem.GetKeyDown(SDL_SCANCODE_W)) { direction.y = -1; }
 		if (inputSystem.GetKeyDown(SDL_SCANCODE_S)) { direction.y = 1; }
 		if (inputSystem.GetKeyDown(SDL_SCANCODE_A)) { direction.x = -1; }
 		if (inputSystem.GetKeyDown(SDL_SCANCODE_D)) { direction.x = 1; }
-		position += direction * speed * shadow::g_time.GetDeltaTime();
+		position += direction * speed * shadow::g_time.GetDeltaTime();*/
 
 		renderer.SetColor(0, 0, 0, 0);
 		renderer.BeginFrame();
@@ -86,11 +102,9 @@ int main(int argc, char* argv[]) {
 			star.Draw(renderer);
 		}
 
-		model.Draw(renderer, position, 8.0f);
+		model.Draw(renderer, transform.position, transform.rotation, transform.scale);
 
 		renderer.EndFrame();
-
-		//this_thread::sleep_for(chrono::milliseconds(10));
 	}
 	/*
 	shadow::vec2 v{ 5, 5};

@@ -25,7 +25,7 @@ namespace shadow {
 		return true;
 	}
 
-	void shadow::Model::Draw(Renderer& renderer, const vec2& position, float scale)
+	void shadow::Model::Draw(Renderer& renderer, const vec2& position, float rotation, float scale)
 	{
 		if (m_points.empty()) { return; }
 
