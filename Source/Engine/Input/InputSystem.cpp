@@ -2,7 +2,7 @@
 
 namespace shadow {
 
-
+	InputSystem g_inputSystem;
 
 	bool shadow::InputSystem::Initialize()
 	{

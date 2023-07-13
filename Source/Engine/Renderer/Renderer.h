@@ -31,4 +31,6 @@ namespace shadow {
 		SDL_Renderer* m_renderer = nullptr;
 		SDL_Window* m_window = nullptr;
 	};
+
+	extern Renderer g_renderer;
 }

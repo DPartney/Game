@@ -2,6 +2,10 @@
 #include"Renderer/Renderer.h"
 #include "Renderer/Model.h"
 #include "Input/InputSystem.h"
+#include "Player.h"
+#include "Enemy.h"
+
+
 #include <iostream>
 #include <vector>
 #include <thread>
@@ -35,26 +39,25 @@ int main(int argc, char* argv[]) {
 	shadow::SeedRandom((unsigned int)time(nullptr));
 	shadow::SetFilePath("assets");
 
-	shadow::Renderer renderer;
-	renderer.Initialize();
-	renderer.CreateWindow("CSC196", 800, 600);
+	shadow::g_renderer.Initialize();
+	shadow::g_renderer.CreateWindow("CSC196", 800, 600);
 
-	shadow::InputSystem inputSystem;
-	inputSystem.Initialize();
+	shadow::g_inputSystem.Initialize();
 
 	vector<shadow::vec2> points2;
 	vector<Star> stars;
 
-	//vector<shadow::vec2> points({ {-10, 5}, { 10, 5 }, { 0, -5 }, { -10, 5 } });
-	shadow::Model model;
-	model.Load("Quartz.txt");
+	shadow::Model enemy_model;
+	shadow::Model player_model;
+	enemy_model.Load("Quartz.txt");
+	player_model.Load("Cursor.txt");
 
 	shadow::vec2 position {400, 300};
 	float speed = 100;
 
 	for (int i = 0; i < 1000; i++)
 	{
-		shadow::vec2 pos(shadow::vec2(shadow::random(renderer.GetWidth()), shadow::random(renderer.GetHeight())));
+		shadow::vec2 pos(shadow::vec2(shadow::random(shadow::g_renderer.GetWidth()), shadow::random(shadow::g_renderer.GetHeight())));
 		shadow::vec2 vel(shadow::randomf(100, 200), 0.0f);
 		stars.push_back(Star(pos, vel));
 	}
@@ -62,104 +65,43 @@ int main(int argc, char* argv[]) {
 	shadow::Transform transform{ {400, 300}, 0, 3 };
 	float turnRate = shadow::DegToRad(180);
 
+	Player player{ 200, shadow::pi, { {400, 300}, 0, 6 }, player_model };
+
+	std::vector<Enemy> enemies;
+	for (int i = 0; i < 25; i++)
+	{
+		Enemy enemy{ 300, shadow::pi, { {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3}, enemy_model };
+		enemies.push_back(enemy);
+	}
+
 	// main gmae loop
 	bool quit = false;
 	while (!quit)
 	{
+		// Update Engine
 		shadow::g_time.Tick();
+		shadow::g_inputSystem.Update();
+		if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_ESCAPE)) { quit = true; }
 
-		inputSystem.Update();
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_ESCAPE)) { quit = true; }
-
-		float rotate = 0;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_A)) { rotate = -1; }
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_D)) { rotate = 1; }
-		transform.rotation += rotate * turnRate * shadow::g_time.GetDeltaTime();
-
-		float thrust = 0;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_W)) { thrust = 1; }
-
-		shadow::vec2 forward = shadow::vec2 { 0, -1 }.Rotate(transform.rotation);
-		transform.position += forward * speed * thrust * shadow::g_time.GetDeltaTime();
-		transform.position.x = shadow::Wrap(transform.position.x, renderer.GetWidth());
-		transform.position.y = shadow::Wrap(transform.position.y, renderer.GetHeight());
-
-		/*shadow::vec2 direction;
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_W)) { direction.y = -1; }
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_S)) { direction.y = 1; }
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_A)) { direction.x = -1; }
-		if (inputSystem.GetKeyDown(SDL_SCANCODE_D)) { direction.x = 1; }
-		position += direction * speed * shadow::g_time.GetDeltaTime();*/
-
-		renderer.SetColor(0, 0, 0, 0);
-		renderer.BeginFrame();
+		// Update Game
+		player.Update(shadow::g_time.GetDeltaTime());
+		for (auto& enemy : enemies) enemy.Update(shadow::g_time.GetDeltaTime());
 
 		// draw
+		shadow::g_renderer.SetColor(0, 0, 0, 0);
+		shadow::g_renderer.BeginFrame();
 		for (auto& star : stars)
 		{
-			star.Update(renderer.GetWidth(), renderer.GetHeight());
-			renderer.SetColor(shadow::random(256), shadow::random(256), shadow::random(256), 255);
-			star.Draw(renderer);
+			star.Update(shadow::g_renderer.GetWidth(), shadow::g_renderer.GetHeight());
+			shadow::g_renderer.SetColor(shadow::random(256), shadow::random(256), shadow::random(256), 255);
+			star.Draw(shadow::g_renderer);
 		}
 
-		model.Draw(renderer, transform.position, transform.rotation, transform.scale);
+		player.Draw(shadow::g_renderer);
+		for (auto& enemy : enemies) enemy.Draw(shadow::g_renderer);
+		enemy_model.Draw(shadow::g_renderer, transform.position, transform.rotation, transform.scale);
 
-		renderer.EndFrame();
+		shadow::g_renderer.EndFrame();
 	}
-	/*
-	shadow::vec2 v{ 5, 5};
-	v.Normalize();
-
-	vector<shadow::vec2> points2;
-	vector<Star> stars;
-
-	for (int i = 0; i < 1000; i++)
-	{
-		shadow::vec2 pos(shadow::vec2(shadow::random(renderer.GetWidth()), shadow::random(renderer.GetHeight())));
-		shadow::vec2 vel(shadow::randomf(1, 4), 0.0f);
-		stars.push_back(Star(pos, vel));
-	}
-
-	while (true) {
-
-		// draw
-		for (auto& star : stars)
-		{
-			star.Update(renderer.GetWidth(), renderer.GetHeight());
-			renderer.SetColor(shadow::random(256), shadow::random(256), shadow::random(256), 255);
-			star.Draw(renderer);
-		}
-	}
-	*/
-
 	return 0;
-	/*
-	int main() {
-		shadow::g_memoryTracker.DisplayInfo();
-		int* p = new int;
-		shadow::g_memoryTracker.DisplayInfo();
-		delete p;
-		shadow::g_memoryTracker.DisplayInfo();
-
-		shadow::Time timer;
-		for (int i = 0; i < 1000000; i++) {}
-		cout << timer.GetElapsedMicroseconds() << endl;
-		*/
-		/*
-		//cout << shadow::GetFilePath() << endl;
-				//shadow::SetFilePath("Assets");
-				//cout << shadow::GetFilePath() << endl;
-				//size_t size;
-				//shadow::GetFileSize("game.txt", size);
-				//cout << size << endl;
-				//std::string s;
-				//shadow::ReadFile("game.txt", s);
-				//cout << s << endl;
-				//shadow::SeedRandom((unsigned int)time(nullptr));
-				//for (int i = 0; i < 10; i++)
-				//{
-				//	cout << shadow::random(1, 2) << endl;
-				//}
-				//
-				*/
 }

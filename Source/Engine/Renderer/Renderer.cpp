@@ -3,6 +3,7 @@
 
 namespace shadow
 {
+	Renderer g_renderer;
 
 	bool Renderer::Initialize()
 	{
