@@ -147,7 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Audio\Audio.vcxproj">
-      <Project>{3f2a6f61-dfd2-4aa4-92b3-3e115ff3bc7b}</Project>
+      <Project>{66f873ef-9171-4a90-a57c-a84e9fd3db13}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Engine\Core\Core.vcxproj">
       <Project>{bbd9a1ee-8c26-411a-8bb0-02204cdbf4a3}</Project>

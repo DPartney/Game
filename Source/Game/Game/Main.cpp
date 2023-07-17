@@ -47,6 +47,8 @@ int main(int argc, char* argv[]) {
 
 	shadow::g_audioSystem.Initialize();
 
+	shadow::g_audioSystem.AddAudio("LaserShot", "Laser_Shoot.wav");
+
 	vector<shadow::vec2> points2;
 	vector<Star> stars;
 

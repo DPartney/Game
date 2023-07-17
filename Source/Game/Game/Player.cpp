@@ -2,6 +2,7 @@
 #include "Weapon.h"
 #include "Framework/Scene.h"
 #include "Input/InputSystem.h"
+#include "Audio/AudioSystem.h"
 
 void Player::Update(float dt) {
 	float rotate = 0;
@@ -18,12 +19,12 @@ void Player::Update(float dt) {
 	m_transform.position.y = shadow::Wrap(m_transform.position.y, (float)shadow::g_renderer.GetHeight());
 
 	// fire weapon
-	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !shadow::g_inputSystem.GetMousePreviousButtonDown(SDL_SCANCODE_SPACE)) {
-		
+	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !shadow::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)) {
+
 		//create weapon
+		shadow::g_audioSystem.PlayOneShot("LaserShot");
 		shadow::Transform transform{m_transform.position, m_transform.rotation, 1};
 		Weapon* weapon = new Weapon{ 400, transform, m_model };
 		m_scene->Add(weapon);
-	}
-
+		}
 }

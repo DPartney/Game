@@ -8,7 +8,12 @@ public:
 		m_turnrate{ turnRate },
 		Actor{ transform, model }
 	{}
-
+	
+	Weapon(float speed, const shadow::Transform& transform, const shadow::Model& model) :
+		m_speed{ speed },
+		Actor{ transform, model }
+	{}
+	
 	void Update(float dt) override;
 
 private:
