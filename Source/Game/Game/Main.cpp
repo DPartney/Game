@@ -2,6 +2,7 @@
 #include"Renderer/Renderer.h"
 #include "Renderer/Model.h"
 #include "Input/InputSystem.h"
+#include "Audio/AudioSystem.h"
 #include "Player.h"
 #include "Enemy.h"
 
@@ -43,6 +44,8 @@ int main(int argc, char* argv[]) {
 	shadow::g_renderer.CreateWindow("CSC196", 800, 600);
 
 	shadow::g_inputSystem.Initialize();
+
+	shadow::g_audioSystem.Initialize();
 
 	vector<shadow::vec2> points2;
 	vector<Star> stars;
@@ -99,7 +102,6 @@ int main(int argc, char* argv[]) {
 
 		player.Draw(shadow::g_renderer);
 		for (auto& enemy : enemies) enemy.Draw(shadow::g_renderer);
-		enemy_model.Draw(shadow::g_renderer, transform.position, transform.rotation, transform.scale);
 
 		shadow::g_renderer.EndFrame();
 	}
