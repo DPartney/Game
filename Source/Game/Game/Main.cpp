@@ -3,9 +3,9 @@
 #include "Renderer/Model.h"
 #include "Input/InputSystem.h"
 #include "Audio/AudioSystem.h"
+#include "Framework/Scene.h"
 #include "Player.h"
 #include "Enemy.h"
-
 
 #include <iostream>
 #include <vector>
@@ -55,9 +55,6 @@ int main(int argc, char* argv[]) {
 	enemy_model.Load("Quartz.txt");
 	player_model.Load("Cursor.txt");
 
-	shadow::vec2 position {400, 300};
-	float speed = 100;
-
 	for (int i = 0; i < 1000; i++)
 	{
 		shadow::vec2 pos(shadow::vec2(shadow::random(shadow::g_renderer.GetWidth()), shadow::random(shadow::g_renderer.GetHeight())));
@@ -65,16 +62,14 @@ int main(int argc, char* argv[]) {
 		stars.push_back(Star(pos, vel));
 	}
 
-	shadow::Transform transform{ {400, 300}, 0, 3 };
-	float turnRate = shadow::DegToRad(180);
+	shadow::Scene scene;
 
-	Player player{ 200, shadow::pi, { {400, 300}, 0, 6 }, player_model };
+	scene.Add(new Player{ 200, shadow::pi, { {400, 300}, 0, 6 }, player_model });
 
-	std::vector<Enemy> enemies;
 	for (int i = 0; i < 25; i++)
 	{
-		Enemy enemy{ 300, shadow::pi, { {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3}, enemy_model };
-		enemies.push_back(enemy);
+		Enemy* enemy = new Enemy{ 300, shadow::pi, { {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3}, enemy_model };
+		scene.Add(enemy);
 	}
 
 	// main gmae loop
@@ -87,8 +82,7 @@ int main(int argc, char* argv[]) {
 		if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_ESCAPE)) { quit = true; }
 
 		// Update Game
-		player.Update(shadow::g_time.GetDeltaTime());
-		for (auto& enemy : enemies) enemy.Update(shadow::g_time.GetDeltaTime());
+		scene.Update(shadow::g_time.GetDeltaTime());
 
 		// draw
 		shadow::g_renderer.SetColor(0, 0, 0, 0);
@@ -100,8 +94,7 @@ int main(int argc, char* argv[]) {
 			star.Draw(shadow::g_renderer);
 		}
 
-		player.Draw(shadow::g_renderer);
-		for (auto& enemy : enemies) enemy.Draw(shadow::g_renderer);
+		scene.Draw(shadow::g_renderer);
 
 		shadow::g_renderer.EndFrame();
 	}

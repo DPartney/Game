@@ -1,9 +1,9 @@
 #pragma once
 #include "Framework/Actor.h"
 
-class Enemy : public shadow::Actor {
+class Weapon : public shadow::Actor {
 public:
-	Enemy(float speed, float turnRate, const shadow::Transform& transform, const shadow::Model& model) :
+	Weapon(float speed, float turnRate, const shadow::Transform& transform, const shadow::Model& model) :
 		m_speed{ speed },
 		m_turnrate{ turnRate },
 		Actor{ transform, model }

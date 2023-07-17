@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Weapon.h"
+#include "Framework/Scene.h"
 #include "Input/InputSystem.h"
 
 void Player::Update(float dt) {
@@ -14,4 +16,14 @@ void Player::Update(float dt) {
 	m_transform.position += forward * m_speed * thrust * shadow::g_time.GetDeltaTime();
 	m_transform.position.x = shadow::Wrap(m_transform.position.x, (float)shadow::g_renderer.GetWidth());
 	m_transform.position.y = shadow::Wrap(m_transform.position.y, (float)shadow::g_renderer.GetHeight());
+
+	// fire weapon
+	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !shadow::g_inputSystem.GetMousePreviousButtonDown(SDL_SCANCODE_SPACE)) {
+		
+		//create weapon
+		shadow::Transform transform{m_transform.position, m_transform.rotation, 1};
+		Weapon* weapon = new Weapon{ 400, transform, m_model };
+		m_scene->Add(weapon);
+	}
+
 }
