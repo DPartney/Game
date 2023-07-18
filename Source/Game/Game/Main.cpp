@@ -11,6 +11,7 @@
 #include <vector>
 #include <thread>
 
+
 using namespace std;
 
 class Star
@@ -36,6 +37,10 @@ public:
 };
 
 int main(int argc, char* argv[]) {
+
+	std::unique_ptr<int> up = std::make_unique<int>(10);
+
+	shadow::g_memoryTracker.DisplayInfo();
 
 	shadow::SeedRandom((unsigned int)time(nullptr));
 	shadow::SetFilePath("assets");
@@ -65,13 +70,13 @@ int main(int argc, char* argv[]) {
 	}
 
 	shadow::Scene scene;
-
-	scene.Add(new Player{ 200, shadow::pi, { {400, 300}, 0, 6 }, player_model });
+	unique_ptr<Player> player = make_unique<Player>(200.0f, shadow::pi, shadow::Transform{ {400, 300}, 0, 6 }, player_model);
+	scene.Add(std::move(player));
 
 	for (int i = 0; i < 25; i++)
 	{
-		Enemy* enemy = new Enemy{ 300, shadow::pi, { {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3}, enemy_model };
-		scene.Add(enemy);
+		unique_ptr<Enemy> enemy = make_unique<Enemy>(300.0f, shadow::pi, shadow::Transform{ {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3 }, enemy_model);
+		scene.Add(std::move(enemy));
 	}
 
 	// main gmae loop
@@ -100,5 +105,8 @@ int main(int argc, char* argv[]) {
 
 		shadow::g_renderer.EndFrame();
 	}
+	scene.RemoveAll();
+	shadow::g_memoryTracker.DisplayInfo();
+
 	return 0;
 }
