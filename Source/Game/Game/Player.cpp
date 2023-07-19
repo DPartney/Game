@@ -5,6 +5,9 @@
 #include "Audio/AudioSystem.h"
 
 void Player::Update(float dt) {
+
+	Actor::Update(dt);
+
 	float rotate = 0;
 	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_A)) { rotate = -1; }
 	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_D)) { rotate = 1; }

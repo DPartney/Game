@@ -11,13 +11,17 @@ namespace shadow {
 			m_model{ model }
 		{};
 
-		virtual void Update(float dt) = 0; // Abstract Method
+		virtual void Update(float dt); // Abstract Method
 		virtual void Draw(shadow::Renderer& renderer);
 
 		class Scene* m_scene = nullptr;
+		friend class Scene;
+
+		shadow::Transform m_transform;
 
 	protected:
-		shadow::Transform m_transform;
+		bool m_destroyed = false;
+		float m_lifespan = -1.0f;
 		shadow::Model m_model;
 	};
 

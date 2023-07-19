@@ -40,8 +40,7 @@ int main(int argc, char* argv[]) {
 
 	std::unique_ptr<int> up = std::make_unique<int>(10);
 
-	shadow::g_memoryTracker.DisplayInfo();
-
+	shadow::MemoryTracker::Initialize();
 	shadow::SeedRandom((unsigned int)time(nullptr));
 	shadow::SetFilePath("assets");
 
@@ -75,7 +74,7 @@ int main(int argc, char* argv[]) {
 
 	for (int i = 0; i < 25; i++)
 	{
-		unique_ptr<Enemy> enemy = make_unique<Enemy>(300.0f, shadow::pi, shadow::Transform{ {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3 }, enemy_model);
+		unique_ptr<Enemy> enemy = make_unique<Enemy>(shadow::randomf(75.0f, 175.0f), shadow::pi, shadow::Transform{ {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3 }, enemy_model);
 		scene.Add(std::move(enemy));
 	}
 
@@ -105,8 +104,8 @@ int main(int argc, char* argv[]) {
 
 		shadow::g_renderer.EndFrame();
 	}
+	stars.clear();
 	scene.RemoveAll();
-	shadow::g_memoryTracker.DisplayInfo();
 
 	return 0;
 }
