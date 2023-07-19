@@ -23,7 +23,6 @@ void Player::Update(float dt) {
 
 	// fire weapon
 	if (shadow::g_inputSystem.GetKeyDown(SDL_SCANCODE_SPACE) && !shadow::g_inputSystem.GetPreviousKeyDown(SDL_SCANCODE_SPACE)) {
-
 		//create weapon
 		shadow::g_audioSystem.PlayOneShot("LaserShot");
 		shadow::Transform transform{m_transform.position, m_transform.rotation, 1};

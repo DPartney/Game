@@ -7,11 +7,16 @@ public:
 		m_speed{ speed },
 		m_turnrate{ turnRate },
 		Actor{ transform, model }
-	{}
+	{
+		m_fireRate = 4.0f;
+		m_fireTimer = m_fireRate;
+	}
 
 	void Update(float dt) override;
 
 private:
 	float m_speed = 0;
 	float m_turnrate = 0;
+	float m_fireRate = 0;
+	float m_fireTimer = 0;
 };
