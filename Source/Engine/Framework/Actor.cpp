@@ -9,6 +9,6 @@ namespace shadow {
 	}
 
 	void Actor::Draw(shadow::Renderer& renderer) {
-		m_model.Draw(renderer, m_transform);
+		m_model->Draw(renderer, m_transform);
 	}
 }

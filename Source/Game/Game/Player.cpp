@@ -27,6 +27,16 @@ void Player::Update(float dt) {
 		shadow::g_audioSystem.PlayOneShot("LaserShot");
 		shadow::Transform transform{m_transform.position, m_transform.rotation, 1};
 		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(400.0f, transform, m_model);
+		weapon->m_tag = "PlayerBullet";
 		m_scene->Add(std::move(weapon));
+	}
+}
+
+void Player::OnCollision(Actor* other)
+{
+	if (other->m_tag == "EnemyBullet")
+	{
+		m_health -= 25;
+		if (m_health <= 0) m_destroyed = true;
 	}
 }

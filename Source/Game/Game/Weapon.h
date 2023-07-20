@@ -3,7 +3,7 @@
 
 class Weapon : public shadow::Actor {
 public:
-	Weapon(float speed, const shadow::Transform& transform, const shadow::Model& model) :
+	Weapon(float speed, const shadow::Transform& transform, std::shared_ptr<shadow::Model> model) :
 		m_speed{ speed },
 		Actor{ transform, model }
 	{
@@ -11,6 +11,7 @@ public:
 	}
 
 	void Update(float dt) override;
+	void OnCollision(Actor* other) override;
 
 private:
 	float m_speed = 0;

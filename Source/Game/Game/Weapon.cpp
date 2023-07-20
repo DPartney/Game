@@ -9,3 +9,11 @@ void Weapon::Update(float dt) {
 	m_transform.position.x = shadow::Wrap(m_transform.position.x, (float)shadow::g_renderer.GetWidth());
 	m_transform.position.y = shadow::Wrap(m_transform.position.y, (float)shadow::g_renderer.GetHeight());
 }
+
+void Weapon::OnCollision(Actor* other)
+{
+	if (other->m_tag != m_tag)
+	{
+		m_destroyed = true;
+	}
+}

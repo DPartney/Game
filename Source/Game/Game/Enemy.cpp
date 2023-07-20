@@ -25,10 +25,19 @@ void Enemy::Update(float dt) {
 	{
 		shadow::Transform transform{m_transform.position, m_transform.rotation, 1};
 		std::unique_ptr<Weapon> weapon = std::make_unique<Weapon>(400.0f, transform, m_model);
+		weapon->m_tag = "EnemyBullet";
 		m_scene->Add(std::move(weapon));
 		m_fireTimer = m_fireRate;
 	}
 
 
 
+}
+
+void Enemy::OnCollision(Actor* other)
+{
+	if (other->m_tag == "PlayerBullet")
+	{
+		m_destroyed = true;
+	}
 }

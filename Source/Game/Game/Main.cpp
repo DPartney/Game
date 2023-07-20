@@ -1,6 +1,6 @@
 #include "Core/Core.h"
 #include"Renderer/Renderer.h"
-#include "Renderer/Model.h"
+#include "Renderer/ModelManager.h"
 #include "Input/InputSystem.h"
 #include "Audio/AudioSystem.h"
 #include "Framework/Scene.h"
@@ -56,10 +56,7 @@ int main(int argc, char* argv[]) {
 	vector<shadow::vec2> points2;
 	vector<Star> stars;
 
-	shadow::Model enemy_model;
-	shadow::Model player_model;
-	enemy_model.Load("Quartz.txt");
-	player_model.Load("Cursor.txt");
+	
 
 	for (int i = 0; i < 1000; i++)
 	{
@@ -69,12 +66,14 @@ int main(int argc, char* argv[]) {
 	}
 
 	shadow::Scene scene;
-	unique_ptr<Player> player = make_unique<Player>(200.0f, shadow::pi, shadow::Transform{ {400, 300}, 0, 6 }, player_model);
+	unique_ptr<Player> player = make_unique<Player>(200.0f, shadow::pi, shadow::Transform{ {400, 300}, 0, 6 }, shadow::g_manager.Get("Cursor.txt"));
+	player->m_tag = "Player";
 	scene.Add(std::move(player));
 
 	for (int i = 0; i < 25; i++)
 	{
-		unique_ptr<Enemy> enemy = make_unique<Enemy>(shadow::randomf(75.0f, 175.0f), shadow::pi, shadow::Transform{ {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3 }, enemy_model);
+		unique_ptr<Enemy> enemy = make_unique<Enemy>(shadow::randomf(75.0f, 175.0f), shadow::pi, shadow::Transform{ {shadow::randomf(800, 1), shadow::randomf(600, 1)}, shadow::randomf(shadow::twoPi), 3 }, shadow::g_manager.Get("Quartz.txt"));
+		enemy->m_tag = "Enemy";
 		scene.Add(std::move(enemy));
 	}
 
